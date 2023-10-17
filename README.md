@@ -79,12 +79,13 @@ ztp/
 
 ## with OpenShift Gitops and SiteConfig CRD
 
+```bash
 siteconfig
 ├── site1-sno-du.yaml
 ├── site2-standard-du.yaml
 └── extra-manifest
     └── 01-example-machine-config.yaml
-
+```
 # Manifest
 
 In our case, in order to speed up the provisioning of the sno, being an experiment, we did not install OpenShift GitOps and therefore could not use a single 'SiteConfig' manifest, below is an example:
