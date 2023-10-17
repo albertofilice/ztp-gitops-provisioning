@@ -38,6 +38,7 @@ The git structure for sno provisioning is divided into base and overlay, so as t
 
 ## our use-case
 
+```bash
 ztp/
 ├── policies
 |   ├── policy-registry.yaml 
@@ -74,6 +75,7 @@ ztp/
 │       ├── 07-infraenv.yaml
 │       └── kustomization.yaml
 └── README.md
+```
 
 ## with OpenShift Gitops and SiteConfig CRD
 
