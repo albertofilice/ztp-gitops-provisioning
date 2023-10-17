@@ -1,0 +1,18 @@
+---
+apiVersion: extensions.hive.openshift.io/v1beta1
+kind: AgentClusterInstall
+metadata:
+  name: name
+  namespace: namespace
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+spec:
+  clusterDeploymentRef:
+    name: sno2
+  imageSetRef:
+    name: img4.12.30-x86-64-appsub
+  networking:
+    machineNetwork:
+    - cidr: 192.168.126.0/24
+  sshPublicKey: <sshPublicKey>
+

@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+data:
+  password: <Base64 Password>
+  username: <Base64 Username>
+kind: Secret
+metadata:
+  name: name
+  namespace: namespace
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+type: Opaque
+---
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  annotations:
+    bmac.agent-install.openshift.io/hostname: sno2
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+  labels:
+    infraenvs.agent-install.openshift.io: sno2
+    cluster-name: sno2
+  name: name
+  namespace: namespace
+spec:
+  bmc:
+    address: redfish-virtualmedia+https://example.com/redfish/v1/Systems/1/
+    credentialsName: sno2
+  bootMACAddress: 5c:ed:8c:9e:62:4c
+

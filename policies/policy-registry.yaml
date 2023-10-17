@@ -1,0 +1,87 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+  name: policy-registry
+  namespace: day2-gitops
+spec:
+  dependencies:
+  - apiVersion: policy.open-cluster-management.io/v1
+    compliance: Compliant
+    kind: Policy
+    name: policy-lvms-operator
+    namespace: day2-gitops
+  disabled: false
+  remediationAction: enforce
+  policy-templates:      
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: policy-registry
+      spec:
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            kind: PersistentVolumeClaim
+            apiVersion: v1
+            metadata:
+              name: image-registry-storage
+              namespace: openshift-image-registry
+              finalizers:
+                - kubernetes.io/pvc-protection
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 100Gi
+              storageClassName: lvms-vg1
+              volumeMode: Filesystem
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: imageregistry.operator.openshift.io/v1
+            kind: Config
+            metadata:
+              name: cluster
+            spec:
+              replicas: 1
+              rolloutStrategy: Recreate
+              managementState: Managed
+              storage:
+                managementState: Unmanaged
+                pvc:
+                  claim: image-registry-storage
+        remediationAction: enforce
+        severity: low
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: placement-policy-registry
+spec:
+  clusterConditions:
+  - status: "True"
+    type: ManagedClusterConditionAvailable
+  clusterSelector:
+    matchExpressions:
+    - key: day2-setup
+      operator: In
+      values:
+      - "true"
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-policy-registry
+placementRef:
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+  name: placement-policy-registry
+subjects:
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: policy-registry

@@ -1,0 +1,98 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+  name: policy-lvms-operator
+  namespace: day2-gitops
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:      
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: policy-lvms-operator
+      spec:
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              labels:
+                openshift.io/cluster-monitoring: "true"
+                pod-security.kubernetes.io/enforce: privileged
+                pod-security.kubernetes.io/audit: privileged
+                pod-security.kubernetes.io/warn: privileged                
+              name: openshift-storage
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: operators.coreos.com/v1
+            kind: OperatorGroup
+            metadata:
+              name: openshift-storage-operatorgroup
+              namespace: openshift-storage
+            spec:
+              targetNamespaces:
+              - openshift-storage
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: operators.coreos.com/v1alpha1
+            kind: Subscription
+            metadata:
+              name: lvms
+              namespace: openshift-storage
+            spec:
+              installPlanApproval: Automatic
+              name: lvms-operator
+              source: redhat-operators
+              sourceNamespace: openshift-marketplace
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: lvm.topolvm.io/v1alpha1
+            kind: LVMCluster
+            metadata:
+              name: lvmcluster
+              namespace: openshift-storage
+            spec:
+              storage:
+                deviceClasses:
+                  - name: vg1
+                    thinPoolConfig:
+                      sizePercent: 90
+                      name: thin-pool-1
+                      overprovisionRatio: 10
+        remediationAction: enforce
+        severity: low
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: placement-policy-lvms-operator
+spec:
+  clusterConditions:
+  - status: "True"
+    type: ManagedClusterConditionAvailable
+  clusterSelector:
+    matchExpressions:
+    - key: day2-setup
+      operator: In
+      values:
+      - "true"
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-policy-lvms-operator
+placementRef:
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+  name: placement-policy-lvms-operator
+subjects:
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: policy-lvms-operator

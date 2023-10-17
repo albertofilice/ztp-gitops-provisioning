@@ -1,0 +1,13 @@
+---
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+  labels:
+    name: sno1
+    cluster-name: sno1
+    base-domain: example.com
+    day2-setup: true
+  name: name
+

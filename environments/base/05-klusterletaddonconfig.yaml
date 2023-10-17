@@ -1,0 +1,24 @@
+---
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'
+  name: name
+  namespace: namespace
+spec:
+  clusterName: 
+  clusterNamespace: 
+  clusterLabels:
+    cloud: hybrid
+  applicationManager:
+    enabled: true
+  policyController:
+    enabled: true
+  searchCollector:
+    enabled: true
+  certPolicyController:
+    enabled: true
+  iamPolicyController:
+    enabled: true
+

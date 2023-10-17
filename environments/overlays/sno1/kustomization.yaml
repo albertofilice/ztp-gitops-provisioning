@@ -1,0 +1,90 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: sno1
+
+patchesJson6902:
+  - target:
+      version: v1
+      kind: Namespace
+      name: name
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: sno1
+  - target:
+      group: metal3.io
+      version: v1alpha1
+      kind: BareMetalHost
+      name: name
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: sno1
+  - target:
+      version: v1
+      kind: Secret
+      name: name
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: sno1
+  - target:
+      group: extensions.hive.openshift.io
+      version: v1beta1
+      kind: AgentClusterInstall
+      name: name
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: sno1
+  - target:
+      group: hive.openshift.io
+      version: v1
+      kind: ClusterDeployment
+      name: name
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: sno1
+  - target:
+      group: agent.open-cluster-management.io
+      version: v1
+      kind: KlusterletAddonConfig
+      name: name
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: sno1
+  - target:
+      group: cluster.open-cluster-management.io
+      version: v1
+      kind: ManagedCluster
+      name: name
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: sno1
+  - target:
+      group: agent-install.openshift.io
+      version: v1beta1
+      kind: InfraEnv
+      name: name
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: sno1
+
+patchesStrategicMerge:
+  - 00-namespace.yaml
+  - 01-bmh.yaml
+  - 02-pull-secret.yaml
+  - 03-agentclusterinstall.yaml
+  - 04-clusterdeployment.yaml
+  - 05-klusterletaddonconfig.yaml
+  - 06-managedcluster.yaml
+  - 07-infraenv.yaml
+
+resources:
+  - ../../base

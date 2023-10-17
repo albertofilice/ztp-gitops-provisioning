@@ -1,0 +1,25 @@
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: InfraEnv
+metadata:
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'
+  labels:
+    agentclusterinstalls.extensions.hive.openshift.io/location: 
+    networkType: dhcp
+  name: name
+  namespace: namespace
+spec:
+  clusterRef:
+    name: 
+    namespace: 
+  agentLabels:
+    agentclusterinstalls.extensions.hive.openshift.io/location: 
+  cpuArchitecture: x86_64
+  ipxeScriptType: DiscoveryImageAlways
+  nmStateConfigLabelSelector:
+    matchLabels:
+      cluster-name: 
+  pullSecretRef:
+    name: pull-secret
+  sshAuthorizedKey: 

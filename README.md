@@ -40,21 +40,9 @@ The git structure for sno provisioning is divided into base and overlay, so as t
 
 ```bash
 ztp/
-├── policies
-|   ├── policy-registry.yaml 
-│   └── policy-htpasswd.yaml
-├── base
-│   ├── 00-namespace.yaml
-│   ├── 01-bmh.yaml
-│   ├── 02-pull-secret.yaml
-│   ├── 03-agentclusterinstall.yaml
-│   ├── 04-clusterdeployment.yaml
-│   ├── 05-klusterletaddonconfig.yaml
-│   ├── 06-managedcluster.yaml
-│   ├── 07-infraenv.yaml
-│   └── kustomization.yaml
-├── overlays
-│   ├── sno1
+├── README.md
+├── environments
+│   ├── base
 │   │   ├── 00-namespace.yaml
 │   │   ├── 01-bmh.yaml
 │   │   ├── 02-pull-secret.yaml
@@ -63,28 +51,47 @@ ztp/
 │   │   ├── 05-klusterletaddonconfig.yaml
 │   │   ├── 06-managedcluster.yaml
 │   │   ├── 07-infraenv.yaml
-│   │   ├── kustomization.yaml
-│   └── sno2
-│       ├── 00-namespace.yaml
-│       ├── 01-bmh.yaml
-│       ├── 02-pull-secret.yaml
-│       ├── 03-agentclusterinstall.yaml
-│       ├── 04-clusterdeployment.yaml
-│       ├── 05-klusterletaddonconfig.yaml
-│       ├── 06-managedcluster.yaml
-│       ├── 07-infraenv.yaml
-│       └── kustomization.yaml
-└── README.md
+│   │   └── kustomization.yaml
+│   └── overlays
+│       ├── sno1
+│       │   ├── 00-namespace.yaml
+│       │   ├── 01-bmh.yaml
+│       │   ├── 02-pull-secret.yaml
+│       │   ├── 03-agentclusterinstall.yaml
+│       │   ├── 04-clusterdeployment.yaml
+│       │   ├── 05-klusterletaddonconfig.yaml
+│       │   ├── 06-managedcluster.yaml
+│       │   ├── 07-infraenv.yaml
+│       │   └── kustomization.yaml
+│       └── sno2
+│           ├── 00-namespace.yaml
+│           ├── 01-bmh.yaml
+│           ├── 02-pull-secret.yaml
+│           ├── 03-agentclusterinstall.yaml
+│           ├── 04-clusterdeployment.yaml
+│           ├── 05-klusterletaddonconfig.yaml
+│           ├── 06-managedcluster.yaml
+│           ├── 07-infraenv.yaml
+│           └── kustomization.yaml
+└── policies
+    ├── policy-htpasswd.yaml
+    ├── policy-lvms.yaml
+    └── policy-registry.yaml
 ```
 
 ## with OpenShift Gitops and SiteConfig CRD
 
 ```bash
 siteconfig
-├── site1-sno-du.yaml
-├── site2-standard-du.yaml
-└── extra-manifest
-    └── 01-example-machine-config.yaml
+├── environments
+|   ├── site1-sno-du.yaml
+|   ├── site2-standard-du.yaml
+|   └── extra-manifest
+|       └── 01-example-machine-config.yaml
+└── policies
+    ├── policy-htpasswd.yaml
+    ├── policy-lvms.yaml
+    └── policy-registry.yaml    
 ```
 # Manifest
 

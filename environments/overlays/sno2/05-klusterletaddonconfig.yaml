@@ -1,0 +1,11 @@
+---
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: name
+  namespace: namespace
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'
+spec:
+  clusterName: sno2
+  clusterNamespace: sno2

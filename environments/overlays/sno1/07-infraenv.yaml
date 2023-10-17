@@ -1,0 +1,18 @@
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: InfraEnv
+metadata:
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+  labels:
+    agentclusterinstalls.extensions.hive.openshift.io/location: sno1
+    networkType: dhcp
+  name: name
+  namespace: namespace
+spec:
+  clusterRef:
+    name: sno1
+    namespace: sno1
+  agentLabels:
+    agentclusterinstalls.extensions.hive.openshift.io/location: sno1
+  sshAuthorizedKey: <sshPublicKey>

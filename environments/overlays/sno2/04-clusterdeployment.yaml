@@ -1,0 +1,19 @@
+---
+apiVersion: hive.openshift.io/v1
+kind: ClusterDeployment
+metadata:
+  name: name
+  namespace: namespace
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+spec:
+  baseDomain: example.com
+  clusterInstallRef:
+    name: sno2
+  clusterName: sno2
+  platform:
+    agentBareMetal:
+      agentSelector:
+        matchLabels:
+          cluster-name: sno2
+

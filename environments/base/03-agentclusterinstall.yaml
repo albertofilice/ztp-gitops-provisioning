@@ -1,0 +1,26 @@
+---
+apiVersion: extensions.hive.openshift.io/v1beta1
+kind: AgentClusterInstall
+metadata:
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'
+    agent-install.openshift.io/install-config-overrides: '{"networking":{"networkType":"OVNKubernetes"}}'    
+  name: name
+  namespace: namespace
+spec:
+  clusterDeploymentRef:
+    name: 
+  imageSetRef:
+    name: 
+  manifestsConfigMapRefs: []
+  networking:
+    clusterNetwork:
+    - cidr: 10.128.0.0/14
+      hostPrefix: 23
+    serviceNetwork:
+    - 172.30.0.0/16  
+    userManagedNetworking: true
+  provisionRequirements:
+    controlPlaneAgents: 1
+  sshPublicKey: 
+

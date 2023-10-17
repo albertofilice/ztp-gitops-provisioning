@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+  labels:
+    kubernetes.io/metadata.name: sno2
+  name: name
+

@@ -1,0 +1,15 @@
+---
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'
+    apps.open-cluster-management.io/reconcile-option: replace                
+  labels:
+    cloud: hybrid
+    name: 
+  name: name
+spec:
+  hubAcceptsClient: true
+  leaseDurationSeconds: 120
+
