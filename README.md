@@ -36,6 +36,97 @@ The base directory is used as a template and contains all global information, in
 
 The git structure for sno provisioning is divided into base and overlay, so as to make the best use of kustomize and not duplicate global information, here is an example:
 
+# Installing RHACM
+
+1. Install Operator
+
+```yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: open-cluster-management
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: open-cluster-management
+  namespace: open-cluster-management
+spec:
+  targetNamespaces:
+  - open-cluster-management  
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: advanced-cluster-management
+  namespace: open-cluster-management
+spec:
+  channel: release-2.7
+  installPlanApproval: Automatic
+  name: advanced-cluster-management
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: operator.open-cluster-management.io/v1
+kind: MultiClusterHub
+metadata:
+  name: multiclusterhub
+  namespace: open-cluster-management
+spec: {}
+```
+
+2. Proceed to define the AgentServiceConfig resource and the Metal3 provisioning server. To do this, copy the code below and paste it into the shell:
+
+```yaml
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: AgentServiceConfig
+metadata:
+  name: agent
+spec:
+  databaseStorage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: <db_volume_size> # For Example: 10Gi
+  filesystemStorage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: <fs_volume_size> # For Example: 100Gi
+  imageStorage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: <image_volume_size>  # For Example: 50Gi
+```
+
+3. Proceed with the configuration of the Metal3 provisioning server resource:
+
+```yaml
+apiVersion: metal3.io/v1alpha1
+kind: Provisioning
+metadata:
+  name: metal3-provisioning
+spec:
+  provisioningNetwork: Disabled # [ Managed | Unmanaged | Disabled ]
+  virtualMediaViaExternalNetwork: true
+  watchAllNamespaces: true
+```
+
+4. RHACM RBAC
+
+```bash
+oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-management:subscription-admin open-cluster-management:subscription-admin kube:admin
+
+oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-management:subscription-admin open-cluster-management:subscription-admin system:admin
+```
+
+
 ## our use-case
 
 ```bash
