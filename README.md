@@ -1,5 +1,11 @@
 # Zero Touch Provisioning
-
+\
+\
+\
+![image](images/ztp.png)
+\
+\
+\
 Zero touch provisioning (ZTP) is a technique that allows to provision new edge sites with declarative configurations of bare-metal  equipment at remote sites. 
 Template or overlay configurations install OpenShift Container Platform features that are required for edge workloads.
 All configurations are declarative in nature and managed with Red Hat Advanced Cluster Management for Kubernetes (RHACM).
@@ -128,7 +134,13 @@ oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-managemen
 
 
 ## our use-case
-
+\
+\
+\
+![image](images/use-case.png)
+\
+\
+\
 ```bash
 ztp/
 ├── README.md
@@ -171,7 +183,13 @@ ztp/
 ```
 
 ## with OpenShift Gitops and SiteConfig CRD
-
+\
+\
+\
+![image](images/ztp-openshift-gitops.png)
+\
+\
+\
 ```bash
 siteconfig
 ├── environments
