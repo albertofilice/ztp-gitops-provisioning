@@ -10,11 +10,13 @@ ZTP leverages RHACM and GitOps approach to remotely manage edge sites.
 Optimized for Single node OpenShift (SNO) and Three node OpenShift.
 For our use-case we implemented a SNO scenario. 
 
-In RHACM, you will need to configure channels that contain URLs and secrets to connect to Git and subscriptions that contain paths, branches or tags that are forwarded to Git. The entire configuration will be imploded using the power of [kustomize](https://kustomize.io/).
+In RHACM, you will need to configure channels that contain URLs and secrets to connect to Git and subscriptions that contain paths, branches or tags that are forwarded to Git. The entire configuration will be implemented using the power of [kustomize](https://kustomize.io/).
 
 The base directory is used as a template and contains all global information, in the overlay folder there will be a folder for each SNO, containing all specific configurations.
 
 # SNO Installation steps
+
+All the following steps are executed automatically via assisted-installer and Red Hat Advanced Cluster Management, so the list is only for explaining purpose and no manual actions are required in order to perform the Single Node OpenShift installation: 
 
 1. The assisted installer generate an ISO Image used for discovery
 2. Mount of Discovery ISO using redfish API.
@@ -28,15 +30,15 @@ The base directory is used as a template and contains all global information, in
 1. Needed hardware redfish api enabled at remote location.
 2. At least one Cluster Hub for management (RHACM as single pane of glass)
 3. Network infrastructure (DNS, DHCP, NTP), network firewall rule for connectivity
-4. A GIT repo which contains manifests for:
+4. One or more GIT repos which contains manifests for:
     - Day-1 ZTP deployment (Site Config CRs)
     - Day-2 Infrastructural Configuration (Governance Policies)
     - Application related manifests (using RHACM AppSub or RH GitOps).
-5. A vault used just for keeping External Secret Operator secrets
+5. A vault used just for keeping External Secret Operator secrets (only if you want to manage secrets with the External Secret Operator) 
 
 # Git Structure
 
-The git structure for sno provisioning is divided into base and overlay, so as to make the best use of kustomize and not duplicate global information, here is an example:
+The git structure for SNO provisioning is divided into base and overlay, so as to make the best use of kustomize and not duplicate global information, here is an example:
 
 # Installing RHACM
 
