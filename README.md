@@ -10,11 +10,12 @@ ZTP leverages RHACM and GitOps approach to remotely manage edge sites.
 Optimized for Single node OpenShift (SNO) and Three node OpenShift.
 For our use-case we implemented a SNO scenario. 
 
-In RHACM, you will need to configure channels that contain URLs and secrets to connect to Git and subscriptions that contain paths, branches or tags that are forwarded to Git. The entire configuration will be imploded using the power of [kustomize](https://kustomize.io/).
+In RHACM, you will need to configure channels that contain URLs and secrets to connect to Git and subscriptions that contain paths, branches or tags that are hosted by Git. The entire configuration will be generated using the power of [kustomize](https://kustomize.io/) that will take care of marging the base teamplates with the proper overlay given a specific site.
 
-The base directory is used as a template and contains all global information, in the overlay folder there will be a folder for each SNO, containing all specific configurations.
+The base directory is used as a template and contains all global informations, inside the overlay folder there will be a subfolder for each SNO, containing all the very specific configuration for the site.
 
 # SNO Installation steps
+All the following steps are executed automatically via assisted-installer and Red Hat Advanced Cluster Management, so the list is only for explaining purpose and no manual actions are required in order to perform the Single Node OpenShift installation:
 
 1. The assisted installer generate an ISO Image used for discovery
 2. Mount of Discovery ISO using redfish API.
@@ -31,12 +32,12 @@ The base directory is used as a template and contains all global information, in
 4. A GIT repo which contains manifests for:
     - Day-1 ZTP deployment (Site Config CRs)
     - Day-2 Infrastructural Configuration (Governance Policies)
-    - Application related manifests (using RHACM AppSub or RH GitOps).
+    - Application related manifests (using RHACM Application Subscriptions or RH GitOps).
 5. A vault used just for keeping External Secret Operator secrets
 
 # Git Structure
 
-The git structure for sno provisioning is divided into base and overlay, so as to make the best use of kustomize and not duplicate global information, here is an example:
+The git structure for SNO provisioning is divided into base and overlays, in this way we can take the best out of the kustomize tool, avoiding duplication of common informations, following an example:
 
 # Installing RHACM
 
@@ -78,7 +79,7 @@ metadata:
 spec: {}
 ```
 
-2. Proceed to define the AgentServiceConfig resource and the Metal3 provisioning server. To do this, copy the code below and paste it into the shell:
+2. Proceed to define the AgentServiceConfig resource and the Metal3 provisioning server. To do this, just use the code reported below:
 
 ```yaml
 ---
@@ -174,7 +175,7 @@ ztp/
     └── policy-registry.yaml
 ```
 
-## with OpenShift Gitops and SiteConfig CRD
+## using OpenShift Gitops and SiteConfig CRD
 
 ![image](images/ztp-openshift-gitops.png)
 
@@ -192,7 +193,7 @@ siteconfig
 ```
 # Manifest
 
-In our case, in order to speed up the provisioning of the sno, being an experiment, we did not install OpenShift GitOps and therefore could not use a single 'SiteConfig' manifest, below is an example:
+In our case, in order to speed up the provisioning of the SNO, being this one just a poc, we did not install OpenShift GitOps and therefore we could not use a single 'SiteConfig' manifest, following an example:
 
 ```yaml
 apiVersion: ran.openshift.io/v1
