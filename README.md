@@ -29,11 +29,11 @@ All the following steps are executed automatically via assisted-installer and Re
 1. Needed hardware redfish api enabled at remote location.
 2. At least one Cluster Hub for management (RHACM as single pane of glass)
 3. Network infrastructure (DNS, DHCP, NTP), network firewall rule for connectivity
-4. A GIT repo which contains manifests for:
+4. One or more GIT repos which contains manifests for:
     - Day-1 ZTP deployment (Site Config CRs)
     - Day-2 Infrastructural Configuration (Governance Policies)
     - Application related manifests (using RHACM Application Subscriptions or RH GitOps).
-5. A vault used just for keeping External Secret Operator secrets
+5. A vault used just for keeping External Secret Operator secrets (only if you want to manage secrets with the External Secret Operator).
 
 # Git Structure
 
