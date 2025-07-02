@@ -1,0 +1,37 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: 99-master-multipath
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    storage:
+      files:
+        - contents:
+            compression: gzip
+            source: data:;base64,H4sIAAAAAAAC/0pJTUsszSkpVqjmUlBQUEjLzEuJzy3NKcksSCzJKFbIy+eq5eJKyklMzs7JLC6BqkpJLctMToVyQKAsNS8lv0hBSdHPNcQxIEAJLlFQlJ9SmlyioKToE+oHEa5FMTE+tSI5taAkMz+vmJDhOM1GMRoQAAD//5GvgZHRAAAA
+          mode: 272
+          overwrite: true
+          path: /etc/multipath.conf
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 99-worker-multipath
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    storage:
+      files:
+        - contents:
+            compression: gzip
+            source: data:;base64,H4sIAAAAAAAC/0pJTUsszSkpVqjmUlBQUEjLzEuJzy3NKcksSCzJKFbIy+eq5eJKyklMzs7JLC6BqkpJLctMToVyQKAsNS8lv0hBSdHPNcQxIEAJLlFQlJ9SmlyioKToE+oHEa5FMTE+tSI5taAkMz+vmJDhOM1GMRoQAAD//5GvgZHRAAAA
+          mode: 272
+          overwrite: true
+          path: /etc/multipath.conf

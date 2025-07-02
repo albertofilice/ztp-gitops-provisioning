@@ -1,0 +1,40 @@
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: ClusterCurator
+metadata:
+  name: sno2
+  namespace: sno2
+  labels:
+    open-cluster-management: curator    
+spec:
+  desiredCuration: install
+  install:
+    towerAuthSecret: toweraccess-install
+    prehook:
+      - name: Sno Setup
+        extra_vars:
+          sno_name: sno2
+          sno_mac: 52:54:00:6b:56:45
+          sno_domain: ocp4.lab.example.com
+          sno_ip: 192.168.100.12
+          network_name: baremetal
+          ocp_api_url: https://api.hub.ocp4.lab.example.com:6443
+        type: Job
+    posthook:
+      - name: Health Check Cluster
+        extra_vars:
+          ocp_api_url: https://api.sno2.ocp4.lab.example.com:6443
+        type: Job
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: toweraccess-install
+  namespace: sno2
+  labels:
+    cluster.open-cluster-management.io/copiedFromNamespace: aap
+    cluster.open-cluster-management.io/copiedFromSecretName: aap-integrations
+    cluster.open-cluster-management.io/type: ans
+data:
+  host: aHR0cHM6Ly9hYXAtY29udHJvbGxlci1hYXAuYXBwcy5odWIub2NwNC5sYWIuZXhhbXBsZS5jb20=
+  token: YWRtaW4=
+type: Opaque

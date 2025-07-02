@@ -1,0 +1,28 @@
+---
+apiVersion: hive.openshift.io/v1
+kind: ClusterDeployment
+metadata:
+  name: sno2
+  namespace: sno2
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+    hive.openshift.io/reconcile-pause: "true"  
+    hive.openshift.io/cluster-platform: agent-baremetal  
+spec:
+  baseDomain: ocp4.lab.example.com
+  clusterInstallRef:
+    group: extensions.hive.openshift.io
+    kind: AgentClusterInstall  
+    name: sno2
+    version: v1beta1    
+  clusterName: sno2
+  controlPlaneConfig:
+    servingCertificates: {}  
+  platform:
+    agentBareMetal:
+      agentSelector:
+        matchLabels:
+          cluster-name: sno2
+  pullSecretRef:
+    name: pull-secret
+

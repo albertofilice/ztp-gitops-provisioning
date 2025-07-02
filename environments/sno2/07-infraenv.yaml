@@ -1,0 +1,26 @@
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: InfraEnv
+metadata:
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+  labels:
+    agentclusterinstalls.extensions.hive.openshift.io/location: sno2
+    networkType: static
+  name: sno2
+  namespace: sno2
+spec:
+  clusterRef:
+    name: sno2
+    namespace: sno2
+  agentLabels:
+    agentclusterinstalls.extensions.hive.openshift.io/location: sno2
+  cpuArchitecture: x86_64
+  ipxeScriptType: DiscoveryImageAlways
+  nmStateConfigLabelSelector:
+    matchLabels:
+      infraenvs.agent-install.openshift.io: sno2
+  pullSecretRef:
+    name: pull-secret      
+  sshAuthorizedKey: ssh-ed25519 XXXXXXXX
+

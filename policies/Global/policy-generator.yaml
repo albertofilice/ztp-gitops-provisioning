@@ -1,0 +1,219 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: policies-global
+placementBindingDefaults:
+  # Set an explicit placement binding name to use rather than rely on the default.
+  name: "placementbinding-global"
+
+policyDefaults:
+  categories:
+    - "CM Configuration Management"
+  controls:
+    - "CM-2 Baseline Configuration"
+  standards:
+    - "NIST SP 800-53"
+  namespaceSelector:
+    include: ["*"]
+    exclude:
+      [
+        "default",
+        "kube-*",
+        "openshift-*",
+        "hypershift",
+        "local-cluster",
+        "multicluster-engine",
+        "open-cluster-*",
+        "hive",
+      ]
+  namespace: open-cluster-management-policies
+  remediationAction: inform
+  complianceType: "musthave"
+  severity: low
+  pruneObjectBehavior: "None"
+  metadataComplianceType: "musthave" 
+
+policySets:
+  - name: global
+    description: "Configurazione globale per tutti i managed clusters"
+    placement:
+      name: "global-placement"
+      labelSelector:
+        matchExpressions:     
+          - key: policyVersion
+            operator: In
+            values:
+              - 1.0.0           
+
+    policies:
+      - policy-base-config-global
+      - policy-day2-config-global
+      - policy-registry-config-global
+      - policy-external-secrets-global
+      - policy-secrets-store-global
+      - policy-authentications-global
+      - policy-check-cluster-operator-global
+
+  - name: hub
+    description: "Configurazioni dedicate al cluster hub"
+    placement:
+      name: "hub-placement"
+      labelSelector:
+        matchExpressions:
+          - key: local-cluster
+            operator: In
+            values:
+              - "true"         
+
+    policies:  
+      - policy-enable-ceph-toolbox
+      - policy-clusterlogging
+
+
+  - name: virtualizations
+    description: "Configurazione relativa ai cluster genvirt baremetal che ospiteranno openshift-virtualizations"
+    placement:
+      name: "virtualizations-placement"
+      labelSelector:
+        matchExpressions:
+          - key: local-cluster
+            operator: DoesNotExist        
+          - key: policyVersion
+            operator: In
+            values:
+              - 1.0.0
+
+    policies:
+      - policy-openshift-virtualizations
+
+  - name: netapp
+    description: "Configurazione relativa ai cluster genvirt baremetal che ospiteranno storage netapp"
+    placement:
+      name: "netapp-placement"
+      labelSelector:
+        matchExpressions:
+          - key: local-cluster
+            operator: DoesNotExist        
+          - key: netapp
+            operator: In
+            values:
+              - "true"
+
+    policies:
+      - policy-openshift-storage
+
+policies:
+  # Base config policies
+  - name: policy-base-config-global
+    description: "Setup audit,chrony,custom-ca,kdump,ingress,oidc,kubelet-parameters,infra-namespace and project-request template"
+    manifests:
+      - path: base-config
+    remediationAction: enforce
+
+  - name: policy-day2-config-global
+    manifests:
+      - path: day2-config
+    description: "Setup custom alert,default annotation,cluster monitoring, cluster logging, eck operator,rolebinding,custom priorityclass and service account for aap"  
+    remediationAction: enforce
+    extraDependencies:
+      - name: "policy-base-config-global"
+        namespace: "open-cluster-management-policies"
+        compliance: "Compliant"
+        kind: "Policy"
+        apiVersion: "policy.open-cluster-management.io/v1"
+      - name: "policy-check-cluster-operator-global"
+        namespace: "open-cluster-management-policies"
+        compliance: "Compliant"
+        kind: "Policy"
+        apiVersion: "policy.open-cluster-management.io/v1"
+
+  - name: policy-registry-config-global
+    description: "Setup persistence,replicas for registry and allowed registry"
+    manifests:
+      - path: registry
+    remediationAction: enforce
+    extraDependencies:
+      - name: "policy-day2-config-global"
+        namespace: "open-cluster-management-policies"
+        compliance: "Compliant"
+        kind: "Policy"
+        apiVersion: "policy.open-cluster-management.io/v1"    
+
+  - name: policy-external-secrets-global
+    description: "Install and configure External Secrets Operator"
+    manifests:
+      - path: secrets-config/policy-external-secrets.yaml
+    remediationAction: enforce
+
+  - name: policy-secrets-store-global
+    description: "Setup vault as secrets store"
+    manifests:
+      - path: secrets-config/policy-secretstore.yaml
+    remediationAction: enforce    
+    extraDependencies:
+      - name: "policy-external-secrets-global"
+        namespace: "open-cluster-management-policies"
+        compliance: "Compliant"
+        kind: "Policy"
+        apiVersion: "policy.open-cluster-management.io/v1"
+        
+  - name: policy-authentications-global
+    description: "Setup Htpasswd Oauth"
+    manifests:
+      - path: security-auth
+    remediationAction: enforce
+    complianceType: "mustonlyhave"
+    extraDependencies:
+      - name: "policy-external-secrets-global"
+        namespace: "open-cluster-management-policies"
+        compliance: "Compliant"
+        kind: "Policy"
+        apiVersion: "policy.open-cluster-management.io/v1"
+
+  - name: policy-check-cluster-operator-global
+    description: "Check if all is well on cluster operator"
+    manifests:
+      - path: testing/check-cluster-operator.yaml
+    remediationAction: inform
+    complianceType: "mustnothave"
+
+  - name: policy-openshift-storage
+    description: "Enable MultiPath, install and configure Netapp Operator"
+    manifests:
+      - path: storage/enable-multipath.yaml
+      - path: storage/policy-install-netapp.yaml
+    remediationAction: enforce
+
+  - name: policy-openshift-virtualizations
+    description: "Setup nmstate,mtv and virtualization Operator"
+    manifests:
+      - path: virtualizations
+    remediationAction: enforce
+    extraDependencies:
+      - name: "policy-day2-config-global"
+        namespace: "open-cluster-management-policies"
+        compliance: "Compliant"
+        kind: "Policy"
+        apiVersion: "policy.open-cluster-management.io/v1"        
+
+#### Start Cluster HUB Dedicated Policies ####
+
+  - name: policy-enable-ceph-toolbox
+    description: "Enable rook-ceph-toolbox only on HUB Cluster with ODF Installed"
+    manifests:
+      - path: hub-config/policy-enable-ceph-toolbox.yaml
+    remediationAction: enforce
+    extraDependencies:
+      - name: "policy-day2-config-global"
+        namespace: "open-cluster-management-policies"
+        compliance: "Compliant"
+        kind: "Policy"
+        apiVersion: "policy.open-cluster-management.io/v1"     
+
+  - name: policy-clusterlogging
+    description: "Configure Cluster Logging on ClusterHUB"
+    manifests:
+      - path: hub-config/policy-clusterlogging.yaml
+    remediationAction: enforce
+
+#### End Cluster HUB Dedicated Policies ####        

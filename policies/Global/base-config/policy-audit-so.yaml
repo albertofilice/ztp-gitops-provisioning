@@ -1,0 +1,73 @@
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: 99-master-audit
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    storage:
+      files:
+      - contents:
+          source: data:text/plain;charset=utf-8;base64,LXcgL3Zhci9sb2cvYXVkaXQgLXAgdyAtayB3cml0ZV9hdWRpdGxvZwotdyAvdmFyL2xvZy9rdWJlLWFwaXNlcnZlciAtcCB3IC1rIHdyaXRlX2t1YmVfYXVkaXRsb2cKLXcgL3Zhci9sb2cvb3BlbnNoaWZ0LWFwaXNlcnZlciAtcCB3IC1rIHdyaXRlX29wZW5zaGlmdF9hdWRpdGxvZwotdyAvdmFyL2xvZy9vYXV0aC1hcGlzZXJ2ZXIgLXAgdyAtayB3cml0ZV9vYXV0aF9hdWRpdGxvZwotdyAvZXRjL3Bhc3N3ZCAtcCB3IC1rIGV0Y19wYXNzd2QKLXcgL2V0Yy9ncm91cCAtcCB3IC1rIGV0Y19ncm91cAotdyAvZXRjL3NoYWRvdyAtcCB3YXIgLWsgZXRjX3NoYWRvdwotdyAvZXRjIC1wIHcgLWsgY2hhbmdlX2V0Y19maWxlcwotdyAvYmluL2ttb2QgLXAgeCAtayBrZXJuZWxtb2R1bGVzCi1hIGFsd2F5cyxleGl0IC1GIGFyY2g9YjY0IC1TIG9wZW4sb3BlbmF0IC1GIGV4aXQ9LUVBQ0NFUyAtRiBrZXk9YWNjZXNzCi1hIGFsd2F5cyxleGl0IC1GIGFyY2g9YjY0IC1TIG9wZW4sb3BlbmF0IC1GIGV4aXQ9LUVQRVJNIC1GIGtleT1hY2Nlc3MKLWEgYWx3YXlzLGV4aXQgLVMgcmVuYW1lLHJtZGlyLHVubGluayx1bmxpbmthdCxyZW5hbWVhdCAtRiBkaXI9L2V0YyAtRiBrZXk9ZGVsZXRlX2V0YwotYSBhbHdheXMsZXhpdCAtUyByZW5hbWUscm1kaXIsdW5saW5rLHVubGlua2F0LHJlbmFtZWF0IC1GIGRpcj0vdmFyL2xvZy9hdWRpdCAtRiBrZXk9ZGVsZXRlX2F1ZGl0bG9nCi1hIGFsd2F5cyxleGl0IC1TIHJlbmFtZSxybWRpcix1bmxpbmssdW5saW5rYXQscmVuYW1lYXQgLUYgZGlyPS92YXIvbG9nL2pvdXJuYWwgLUYga2V5PWRlbGV0ZV9qb3VybmFsCi1hIGFsd2F5cyxleGl0IC1TIGFsbCAtRiBwYXRoPS9zYmluL3JlYm9vdCAtRiBrZXk9cmVib290Ci1hIGFsd2F5cyxleGl0IC1TIGFsbCAtRiBwYXRoPS9zYmluL2luaXQgLUYga2V5PXJlYm9vdAotYSBhbHdheXMsZXhpdCAtUyBhbGwgLUYgcGF0aD0vc2Jpbi9wb3dlcm9mZiAtRiBrZXk9cmVib290Ci1hIGFsd2F5cyxleGl0IC1TIGFsbCAtRiBwYXRoPS9zYmluL3NodXRkb3cgLUYga2V5PXJlYm9vdAotYSBhbHdheXMsZXhpdCAtUyBhbGwgLUYgcGF0aD0vYmluL3N5c3RlbWN0bCAtRiBrZXk9cmVib290Cg==
+        filesystem: root
+        mode: 384
+        overwrite: true
+        path: /etc/audit/rules.d/customaudit.rules
+      - contents:
+          source: data:text/plain;charset=utf-8;base64,IwojIFRoaXMgZmlsZSBjb250cm9scyB0aGUgY29uZmlndXJhdGlvbiBvZiB0aGUgYXVkaXQgZGFlbW9uCiMKCmxvY2FsX2V2ZW50cyA9IHllcwp3cml0ZV9sb2dzID0geWVzCmxvZ19maWxlID0gL3Zhci9sb2cvYXVkaXQvYXVkaXQubG9nCmxvZ19ncm91cCA9IHJvb3QKbG9nX2Zvcm1hdCA9IEVOUklDSEVECmZsdXNoID0gSU5DUkVNRU5UQUxfQVNZTkMKZnJlcSA9IDUwCm1heF9sb2dfZmlsZSA9IDE1MApudW1fbG9ncyA9IDI0CnByaW9yaXR5X2Jvb3N0ID0gNApuYW1lX2Zvcm1hdCA9IE5PTkUKIyNuYW1lID0gbXlkb21haW4KbWF4X2xvZ19maWxlX2FjdGlvbiA9IFJPVEFURQpzcGFjZV9sZWZ0ID0gNzUKc3BhY2VfbGVmdF9hY3Rpb24gPSBTWVNMT0cKdmVyaWZ5X2VtYWlsID0geWVzCmFjdGlvbl9tYWlsX2FjY3QgPSByb290CmFkbWluX3NwYWNlX2xlZnQgPSA1MAphZG1pbl9zcGFjZV9sZWZ0X2FjdGlvbiA9IFNVU1BFTkQKZGlza19mdWxsX2FjdGlvbiA9IFNVU1BFTkQKZGlza19lcnJvcl9hY3Rpb24gPSBTVVNQRU5ECnVzZV9saWJ3cmFwID0geWVzCiMjdGNwX2xpc3Rlbl9wb3J0ID0gNjAKdGNwX2xpc3Rlbl9xdWV1ZSA9IDUKdGNwX21heF9wZXJfYWRkciA9IDEKIyN0Y3BfY2xpZW50X3BvcnRzID0gMTAyNC02NTUzNQp0Y3BfY2xpZW50X21heF9pZGxlID0gMAp0cmFuc3BvcnQgPSBUQ1AKa3JiNV9wcmluY2lwYWwgPSBhdWRpdGQKIyNrcmI1X2tleV9maWxlID0gL2V0Yy9hdWRpdC9hdWRpdC5rZXkKZGlzdHJpYnV0ZV9uZXR3b3JrID0gbm8KcV9kZXB0aCA9IDQwMApvdmVyZmxvd19hY3Rpb24gPSBTWVNMT0cKbWF4X3Jlc3RhcnRzID0gMTAKcGx1Z2luX2RpciA9IC9ldGMvYXVkaXQvcGx1Z2lucy5kCg==
+        filesystem: root
+        mode: 416
+        overwrite: true
+        path: /etc/audit/auditd.conf
+      - contents:
+          source: data:text/plain;charset=utf-8;base64,W1NlcnZpY2VdClJlc3RhcnQ9b24tZmFpbHVyZQpSZXN0YXJ0UHJldmVudEV4aXRTdGF0dXM9Ngo=
+        filesystem: root
+        mode: 420
+        overwrite: true
+        path: /etc/systemd/system/auditd.service.d/restart-on-failure.conf  
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 99-worker-audit
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    storage:
+      files:
+      - contents:
+          source: data:text/plain;charset=utf-8;base64,LXcgL3Zhci9sb2cvYXVkaXQgLXAgdyAtayB3cml0ZV9hdWRpdGxvZwotdyAvdmFyL2xvZy9rdWJlLWFwaXNlcnZlciAtcCB3IC1rIHdyaXRlX2t1YmVfYXVkaXRsb2cKLXcgL3Zhci9sb2cvb3BlbnNoaWZ0LWFwaXNlcnZlciAtcCB3IC1rIHdyaXRlX29wZW5zaGlmdF9hdWRpdGxvZwotdyAvdmFyL2xvZy9vYXV0aC1hcGlzZXJ2ZXIgLXAgdyAtayB3cml0ZV9vYXV0aF9hdWRpdGxvZwotdyAvZXRjL3Bhc3N3ZCAtcCB3IC1rIGV0Y19wYXNzd2QKLXcgL2V0Yy9ncm91cCAtcCB3IC1rIGV0Y19ncm91cAotdyAvZXRjL3NoYWRvdyAtcCB3YXIgLWsgZXRjX3NoYWRvdwotdyAvZXRjIC1wIHcgLWsgY2hhbmdlX2V0Y19maWxlcwotdyAvYmluL2ttb2QgLXAgeCAtayBrZXJuZWxtb2R1bGVzCi1hIGFsd2F5cyxleGl0IC1GIGFyY2g9YjY0IC1TIG9wZW4sb3BlbmF0IC1GIGV4aXQ9LUVBQ0NFUyAtRiBrZXk9YWNjZXNzCi1hIGFsd2F5cyxleGl0IC1GIGFyY2g9YjY0IC1TIG9wZW4sb3BlbmF0IC1GIGV4aXQ9LUVQRVJNIC1GIGtleT1hY2Nlc3MKLWEgYWx3YXlzLGV4aXQgLVMgcmVuYW1lLHJtZGlyLHVubGluayx1bmxpbmthdCxyZW5hbWVhdCAtRiBkaXI9L2V0YyAtRiBrZXk9ZGVsZXRlX2V0YwotYSBhbHdheXMsZXhpdCAtUyByZW5hbWUscm1kaXIsdW5saW5rLHVubGlua2F0LHJlbmFtZWF0IC1GIGRpcj0vdmFyL2xvZy9hdWRpdCAtRiBrZXk9ZGVsZXRlX2F1ZGl0bG9nCi1hIGFsd2F5cyxleGl0IC1TIHJlbmFtZSxybWRpcix1bmxpbmssdW5saW5rYXQscmVuYW1lYXQgLUYgZGlyPS92YXIvbG9nL2pvdXJuYWwgLUYga2V5PWRlbGV0ZV9qb3VybmFsCi1hIGFsd2F5cyxleGl0IC1TIGFsbCAtRiBwYXRoPS9zYmluL3JlYm9vdCAtRiBrZXk9cmVib290Ci1hIGFsd2F5cyxleGl0IC1TIGFsbCAtRiBwYXRoPS9zYmluL2luaXQgLUYga2V5PXJlYm9vdAotYSBhbHdheXMsZXhpdCAtUyBhbGwgLUYgcGF0aD0vc2Jpbi9wb3dlcm9mZiAtRiBrZXk9cmVib290Ci1hIGFsd2F5cyxleGl0IC1TIGFsbCAtRiBwYXRoPS9zYmluL3NodXRkb3cgLUYga2V5PXJlYm9vdAotYSBhbHdheXMsZXhpdCAtUyBhbGwgLUYgcGF0aD0vYmluL3N5c3RlbWN0bCAtRiBrZXk9cmVib290Cg==
+        filesystem: root
+        mode: 384
+        overwrite: true
+        path: /etc/audit/rules.d/customaudit.rules
+      - contents:
+          source: data:text/plain;charset=utf-8;base64,IwojIFRoaXMgZmlsZSBjb250cm9scyB0aGUgY29uZmlndXJhdGlvbiBvZiB0aGUgYXVkaXQgZGFlbW9uCiMKCmxvY2FsX2V2ZW50cyA9IHllcwp3cml0ZV9sb2dzID0geWVzCmxvZ19maWxlID0gL3Zhci9sb2cvYXVkaXQvYXVkaXQubG9nCmxvZ19ncm91cCA9IHJvb3QKbG9nX2Zvcm1hdCA9IEVOUklDSEVECmZsdXNoID0gSU5DUkVNRU5UQUxfQVNZTkMKZnJlcSA9IDUwCm1heF9sb2dfZmlsZSA9IDE1MApudW1fbG9ncyA9IDI0CnByaW9yaXR5X2Jvb3N0ID0gNApuYW1lX2Zvcm1hdCA9IE5PTkUKIyNuYW1lID0gbXlkb21haW4KbWF4X2xvZ19maWxlX2FjdGlvbiA9IFJPVEFURQpzcGFjZV9sZWZ0ID0gNzUKc3BhY2VfbGVmdF9hY3Rpb24gPSBTWVNMT0cKdmVyaWZ5X2VtYWlsID0geWVzCmFjdGlvbl9tYWlsX2FjY3QgPSByb290CmFkbWluX3NwYWNlX2xlZnQgPSA1MAphZG1pbl9zcGFjZV9sZWZ0X2FjdGlvbiA9IFNVU1BFTkQKZGlza19mdWxsX2FjdGlvbiA9IFNVU1BFTkQKZGlza19lcnJvcl9hY3Rpb24gPSBTVVNQRU5ECnVzZV9saWJ3cmFwID0geWVzCiMjdGNwX2xpc3Rlbl9wb3J0ID0gNjAKdGNwX2xpc3Rlbl9xdWV1ZSA9IDUKdGNwX21heF9wZXJfYWRkciA9IDEKIyN0Y3BfY2xpZW50X3BvcnRzID0gMTAyNC02NTUzNQp0Y3BfY2xpZW50X21heF9pZGxlID0gMAp0cmFuc3BvcnQgPSBUQ1AKa3JiNV9wcmluY2lwYWwgPSBhdWRpdGQKIyNrcmI1X2tleV9maWxlID0gL2V0Yy9hdWRpdC9hdWRpdC5rZXkKZGlzdHJpYnV0ZV9uZXR3b3JrID0gbm8KcV9kZXB0aCA9IDQwMApvdmVyZmxvd19hY3Rpb24gPSBTWVNMT0cKbWF4X3Jlc3RhcnRzID0gMTAKcGx1Z2luX2RpciA9IC9ldGMvYXVkaXQvcGx1Z2lucy5kCg==
+        filesystem: root
+        mode: 416
+        overwrite: true
+        path: /etc/audit/auditd.conf
+      - contents:
+          source: data:text/plain;charset=utf-8;base64,W1NlcnZpY2VdClJlc3RhcnQ9b24tZmFpbHVyZQpSZXN0YXJ0UHJldmVudEV4aXRTdGF0dXM9Ngo=
+        filesystem: root
+        mode: 420
+        overwrite: true
+        path: /etc/systemd/system/auditd.service.d/restart-on-failure.conf  
+---
+apiVersion: config.openshift.io/v1
+kind: APIServer
+metadata:
+  name: cluster
+spec:
+  audit:
+    customRules:
+    - group: system:authenticated:oauth
+      profile: Default
+    profile: None

@@ -1,0 +1,30 @@
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfigPool
+metadata:
+  name: master
+  labels:
+    custom-kubelet: 'custom-parms'
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfigPool
+metadata:
+  name: worker
+  labels:
+    custom-kubelet: 'custom-parms'
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: set-custom-parms
+spec:
+  machineConfigPoolSelector:
+    matchLabels:
+      custom-kubelet: custom-parms
+  autoSizingReserved: true
+  kubeletConfig:
+    podsPerCore: 10
+    maxPods: 500
+    streamingConnectionIdleTimeout: 4h
+    kubeAPIBurst: 600
+    kubeAPIQPS: 300

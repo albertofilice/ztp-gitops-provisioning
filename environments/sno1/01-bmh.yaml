@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+data:
+  password: YWRtaW4=
+  username: YWRtaW4=
+kind: Secret
+metadata:
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'
+  name: sno1.ocp4.lab.example.com
+  namespace: sno1
+type: Opaque
+---
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  annotations:
+    bmac.agent-install.openshift.io/hostname: sno1.ocp4.lab.example.com
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+  labels:
+    infraenvs.agent-install.openshift.io: sno1
+    cluster-name: sno1
+  name: sno1.ocp4.lab.example.com
+  namespace: sno1
+spec:
+  bmc:
+    address: redfish-virtualmedia+http://192.168.100.1:8000/redfish/v1/Systems/sno1
+    credentialsName: sno1.ocp4.lab.example.com
+  bootMACAddress: 52:54:00:11:0d:b9
+  online: true
+  rootDeviceHints:
+    deviceName: "/dev/vda"

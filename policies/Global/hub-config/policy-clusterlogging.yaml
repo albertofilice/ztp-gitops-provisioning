@@ -1,0 +1,259 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: ConfigurationPolicy
+metadata:
+  name: policy-install-logging-operator-global
+spec:
+  object-templates:
+    - complianceType: musthave
+      metadataComplianceType: musthave
+      objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-logging-operator
+          namespace: '{{ fromClusterClaim "name"}}'
+        spec:
+          complianceType: musthave
+          remediationAction: enforce
+          severity: critical
+          subscription:
+            channel: stable-6.1
+            name: cluster-logging
+            namespace: openshift-logging
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            startingCSV: cluster-logging.v6.1.2
+          upgradeApproval: None
+          versions:
+            - cluster-logging.v6.1.2
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: ConfigurationPolicy
+metadata:
+  name: policy-install-observability-operator-global
+spec:
+  object-templates:
+    - complianceType: musthave
+      metadataComplianceType: musthave
+      objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-observability-operator
+          namespace: '{{ fromClusterClaim "name"}}'
+        spec:
+          complianceType: musthave
+          remediationAction: enforce
+          severity: critical
+          subscription:
+            channel: stable
+            name: cluster-observability-operator
+            namespace: openshift-logging
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            startingCSV: cluster-observability-operator.v1.0.0
+          upgradeApproval: None
+          versions:
+            - cluster-observability-operator.v1.0.0
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: ConfigurationPolicy
+metadata:
+  name: policy-install-loki-operator-global
+spec:
+  object-templates:
+    - complianceType: musthave
+      metadataComplianceType: musthave
+      objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-loki-operator
+          namespace: '{{ fromClusterClaim "name"}}'
+        spec:
+          complianceType: musthave
+          remediationAction: enforce
+          severity: critical
+          subscription:
+            channel: stable-6.1
+            name: loki-operator
+            namespace: openshift-logging
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            startingCSV: loki-operator.v6.1.2
+          upgradeApproval: None
+          versions:
+            - loki-operator.v6.1.2
+---
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: logging-loki-s3
+  namespace: openshift-logging
+spec:
+  generateBucketName: logging-loki-s3
+  storageClassName: openshift-storage.noobaa.io
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logging-loki-odf
+  namespace: openshift-logging
+type: generic
+stringData:
+  access_key_id: '{{ fromSecret "openshift-logging" "logging-loki-s3" "AWS_ACCESS_KEY_ID" | base64dec }}'
+  access_key_secret: '{{ fromSecret "openshift-logging" "logging-loki-s3" "AWS_SECRET_ACCESS_KEY" | base64dec }}'
+  bucketnames: '{{ fromConfigMap "openshift-logging" "logging-loki-s3" "BUCKET_NAME" }}'
+  endpoint: 'https://{{ fromConfigMap "openshift-logging" "logging-loki-s3" "BUCKET_HOST" }}:{{ fromConfigMap "openshift-logging" "logging-loki-s3" "BUCKET_PORT" }}'
+---
+apiVersion: observability.openshift.io/v1alpha1
+kind: UIPlugin
+metadata:
+  name: logging
+spec:
+  logging:
+    lokiStack:
+      name: logging-loki
+  type: Logging
+--- 
+apiVersion: loki.grafana.com/v1
+kind: LokiStack
+metadata:
+  name: logging-loki
+  namespace: openshift-logging
+spec:
+  hashRing:
+    type: memberlist
+  limits:
+    global:
+      ingestion:
+        ingestionBurstSize: 32
+        ingestionRate: 16
+      retention:
+        days: 20
+    tenants:
+      application:
+        retention:
+          days: 1
+      infrastructure:
+        retention:
+          days: 7
+  managementState: Managed
+  size: 1x.extra-small
+  storage:
+    schemas:
+      - effectiveDate: '2024-10-01'
+        version: v13
+    secret:
+      name: logging-loki-odf
+      type: s3
+    tls:
+      caKey: service-ca.crt
+      caName: openshift-service-ca.crt
+  storageClassName: managed-csi-azkey
+  tenants:
+    mode: openshift-logging 
+--- 
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: collector
+  namespace: openshift-logging
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: logging-collector-logs-writer
+subjects:
+  - kind: ServiceAccount
+    name: collector
+    namespace: openshift-logging
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: logging-collector-logs-writer
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: collect-application-logs
+subjects:
+  - kind: ServiceAccount
+    name: collector
+    namespace: openshift-logging
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: collect-application-logs
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: collect-audit-logs
+subjects:
+  - kind: ServiceAccount
+    name: collector
+    namespace: openshift-logging
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: collect-audit-logs
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: collect-infrastructure-logs
+subjects:
+  - kind: ServiceAccount
+    name: collector
+    namespace: openshift-logging
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: collect-infrastructure-logs
+---
+apiVersion: observability.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: collector
+  namespace: openshift-logging
+spec:
+  collector:
+    tolerations:
+      - effect: NoSchedule
+        key: elasticnode
+        operator: Equal
+        value: 'true'
+      - effect: NoSchedule
+        key: node.ocs.openshift.io/storage
+        operator: Equal
+        value: 'true'
+  filters:
+    - name: multi-line
+      type: detectMultilineException
+  managementState: Managed
+  outputs:
+    - lokiStack:
+        authentication:
+          token:
+            from: serviceAccount
+        target:
+          name: logging-loki
+          namespace: openshift-logging
+      name: default-lokistack
+      tls:
+        ca:
+          configMapName: openshift-service-ca.crt
+          key: service-ca.crt
+      type: lokiStack
+  pipelines:
+    - filterRefs:
+        - multi-line
+      inputRefs:
+        - application
+        - infrastructure
+      name: default-logstore
+      outputRefs:
+        - default-lokistack
+  serviceAccount:
+    name: collector

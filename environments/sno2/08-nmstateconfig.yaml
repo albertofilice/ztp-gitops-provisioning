@@ -1,0 +1,41 @@
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: NMStateConfig
+metadata:
+  annotations:
+    apps.open-cluster-management.io/do-not-delete: 'true'  
+  name: sno2.ocp4.lab.example.com
+  namespace: sno2
+  labels:
+    agent-install.openshift.io/bmh: sno2.ocp4.lab.example.com
+    infraenvs.agent-install.openshift.io: sno2
+spec:
+  config:
+    interfaces:
+      - name: enp1s0
+        type: ethernet
+        state: up
+        mac-address: 52:54:00:6b:56:45
+        ipv4:
+          enabled: true
+          address:
+            - ip: 192.168.100.12
+              prefix-length: 24
+          dhcp: false          
+        ipv6:
+          enabled: false
+    dns-resolver:
+       config:
+         server:
+         - 192.168.100.10
+         - 192.168.100.1
+    routes:
+      config:
+        - destination: 0.0.0.0/0
+          next-hop-address: 192.168.100.1
+          next-hop-interface: enp1s0
+          table-id: 254            
+  interfaces:
+    - name: enp1s0
+      macAddress: 52:54:00:6b:56:45
+
