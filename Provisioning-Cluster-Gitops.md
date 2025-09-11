@@ -268,7 +268,21 @@ The integration between ZTP and OpenShift Virtualization brings significant bene
 
 ### Best Practices for Implementation
 
-1. **GitOps as Single Source of Truth**
+Before implementing ZTP and GitOps, it is important to follow a few essential best practices to ensure security, scalability, and ease of management. Here are the main recommendations:
+
+1. **GitOps as the single source of truth**  
+   All configurations should be versioned and managed through Git.
+2. **Environment separation**  
+   Keep separate environments (dev, test, prod) to avoid mistakes and simplify changes.
+3. **Secure secret management**  
+   Use operators like External Secrets to avoid storing sensitive data in the repository.
+4. **Automated validation**  
+   Integrate automated tests and compliance checks in CI/CD pipelines.
+5. **Essential documentation**  
+   Add brief documentation to configurations to support maintenance.
+
+ArgoCD Application Example:
+
    ```yaml
    apiVersion: argoproj.io/v1alpha1
    kind: Application
@@ -294,6 +308,8 @@ The integration between ZTP and OpenShift Virtualization brings significant bene
    ```
 
 ## Automation with Ansible Automation Platform
+
+Automating cluster lifecycle operations is essential for consistency and efficiency in large-scale environments. The Ansible Automation Platform enables the orchestration of complex workflows, such as pre- and post-installation tasks, upgrades, and validations, ensuring that every step is repeatable and auditable. Below are some key concepts and examples of how automation can be integrated into the ZTP process.
 
 ### Pre-hook and Post-hook
 
@@ -587,6 +603,8 @@ ESO integrates perfectly with the ZTP workflow:
    - Update certificates
 
 ### Security Considerations
+
+When designing and implementing a secure and scalable OpenShift environment, it is important to consider several key aspects. The following points highlight the most critical considerations to keep in mind to ensure a robust and compliant infrastructure:
 
 1. **Secret Access**:
    - Implement the principle of least privilege
